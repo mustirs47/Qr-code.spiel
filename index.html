@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reaktionstest</title>
+    <script>
+        let startTime;
+        function startGame() {
+            document.getElementById("start").style.display = "none";
+            setTimeout(() => {
+                startTime = Date.now();
+                document.getElementById("clickMe").style.display = "block";
+            }, Math.random() * 3000 + 2000); // Zwischen 2-5 Sekunden warten
+        }
+        function checkTime() {
+            let reactionTime = Date.now() - startTime;
+            alert("Deine Reaktionszeit: " + reactionTime + " ms!");
+            location.reload();
+        }
+    </script>
+</head>
+<body>
+    <button id="start" onclick="startGame()">Starte das Spiel</button>
+    <button id="clickMe" style="display:none;" onclick="checkTime()">Klick mich!</button>
+</body>
+</html>const { NavigationView, Page, TabFolder, Tab, Button, TextView, WebView, Composite } = tabris;
+
+// Farbschema
+const DARK_GRAY = '#212121';
+const DARK_BLUE = '#1E88E5';
+const LIGHT_GRAY = '#B0BEC5';
+
+// Haupt-UI erstellen
+const navigationView = new NavigationView({
+  left: 0, top: 0, right: 0, bottom: 0,
+  background: DARK_GRAY
+}).appendTo(ui.contentView);
+
+// TabFolder für Bottom Navigation
+const tabFolder = new TabFolder({
+  left: 0, right: 0, bottom: 0, height: 60,
+  background: DARK_GRAY,
+  textColor: LIGHT_GRAY,
+  tabBarLocation: 'bottom',
+  paging: true
+}).appendTo(navigationView);
+
+// Startseite
+const homeTab = new Tab({
+  title: 'Home'
+}).appendTo(tabFolder);
+
+new TextView({
+  centerX: 0, centerY: 0,
+  text: 'Welcome to PDF Expert!\nTap the button to view a sample PDF.',
+  textColor: LIGHT_GRAY,
+  font: '20px'
+}).appendTo(homeTab);
+
+// Bibliothek
+const libraryTab = new Tab({
+  title: 'Library'
+}).appendTo(tabFolder);
+
+new TextView({
+  centerX: 0, centerY: 0,
+  text: 'Library - Coming Soon!',
+  textColor: LIGHT_GRAY,
+  font: '20px'
+}).appendTo(libraryTab);
+
+// Werkzeuge
+const toolsTab = new Tab({
+  title: 'Tools'
+}).appendTo(tabFolder);
+
+new TextView({
+  centerX: 0, centerY: 0,
+  text: 'Tools - Coming Soon!',
+  textColor: LIGHT_GRAY,
+  font: '20px'
+}).appendTo(toolsTab);
+
+// Einstellungen
+const settingsTab = new Tab({
+  title: 'Settings'
+}).appendTo(tabFolder);
+
+new TextView({
+  centerX: 0, centerY: 0,
+  text: 'Settings - Coming Soon!',
+  textColor: LIGHT_GRAY,
+  font: '20px'
+}).appendTo(settingsTab);
+
+// Floating Action Button für PDF-Anzeige
+const fab = new Button({
+  right: 16, bottom: 80,
+  width: 56, height: 56,
+  background: DARK_BLUE,
+  text: '+',
+  textColor: LIGHT_GRAY,
+  font: '24px',
+  elevation: 6,
+  cornerRadius: 28
+}).appendTo(navigationView);
+
+let isMarking = false;
+
+// PDF-Seite öffnen
+function openPDFViewer() {
+  const pdfPage = new Page({
+    title: 'PDF Viewer',
+    background: DARK_GRAY
+  }).appendTo(navigationView);
+
+  // Platzhalter-PDF über WebView (da Playground keinen Dateizugriff hat)
+  const webView = new WebView({
+    left: 0, top: 0, right: 0, bottom: 50,
+    url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf' // Beispiel-PDF
+  }).appendTo(pdfPage);
+
+  const toolbar = new Composite({
+    left: 0, bottom: 0, right: 0, height: 50,
+    background: DARK_GRAY
+  }).appendTo(pdfPage);
+
+  const pageInfo = new TextView({
+    left: 10, centerY: 0,
+    text: 'Page 1 (Demo)',
+    textColor: LIGHT_GRAY,
+    font: '16px'
+  }).appendTo(toolbar);
+
+  const markButton = new Button({
+    right: 10, centerY: 0,
+    text: isMarking ? 'Stop Marking' : 'Mark',
+    textColor: LIGHT_GRAY,
+    background: DARK_BLUE,
+    cornerRadius: 4
+  }).appendTo(toolbar).onSelect(() => {
+    isMarking = !isMarking;
+    markButton.text = isMarking ? 'Stop Marking' : 'Mark';
+    if (isMarking) {
+      new Composite({
+        left: 50, top: 50, width: 100, height: 20,
+        background: 'rgba(255, 255, 0, 0.5)'
+      }).appendTo(pdfPage);
+    }
+  });
+}
+
+// FAB-Interaktion
+fab.onSelect(() => {
+  openPDFViewer();
+});
+
+// Initialisierung
+console.log('PDF Expert started in Playground!');
